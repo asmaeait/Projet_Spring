@@ -19,7 +19,6 @@ public interface ProjetRepository extends JpaRepository<Projet, Long> {
     List<Projet> findByOrganismeId(Long organismeId);
     List<Projet> findByChefProjetId(Long chefProjetId);
 
-    // Recherche par mot clé (nom OU code)
     @Query("""
         SELECT p FROM Projet p
         WHERE LOWER(p.nom) LIKE LOWER(CONCAT('%', :keyword, '%'))
@@ -27,7 +26,6 @@ public interface ProjetRepository extends JpaRepository<Projet, Long> {
     """)
     List<Projet> searchByKeyword(@Param("keyword") String keyword);
 
-    // Projets en cours (au moins une phase non terminée)
     @Query("""
         SELECT DISTINCT p FROM Projet p
         JOIN p.phases ph
@@ -35,7 +33,6 @@ public interface ProjetRepository extends JpaRepository<Projet, Long> {
     """)
     List<Projet> findProjetsEnCours();
 
-    // Projets clôturés (toutes les phases terminées)
     @Query("""
         SELECT p FROM Projet p
         WHERE NOT EXISTS (

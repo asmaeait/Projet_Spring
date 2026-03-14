@@ -18,7 +18,6 @@ public interface LigneEmployePhaseRepository
     List<LigneEmployePhase> findByEmployeId(Long employeId);
     boolean existsByIdPhaseIdAndIdEmployeId(Long phaseId, Long employeId);
 
-    // Vérifier la disponibilité d'un employé sur une période
     @Query("""
         SELECT COUNT(lep) > 0 FROM LigneEmployePhase lep
         WHERE lep.employe.id = :employeId
