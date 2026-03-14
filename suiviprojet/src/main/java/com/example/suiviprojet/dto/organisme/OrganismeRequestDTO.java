@@ -1,4 +1,4 @@
-package com.example.suiviprojet.dto;
+package com.example.suiviprojet.dto.organisme;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

@@ -1,6 +1,6 @@
 package com.example.suiviprojet.controllers;
 
-import com.example.suiviprojet.dto.OrganismeRequestDTO;
+import com.example.suiviprojet.dto.organisme.OrganismeRequestDTO;
 import com.example.suiviprojet.dto.organisme.OrganismeResponseDTO;
 import com.example.suiviprojet.services.OrganismeService;
 import jakarta.validation.Valid;

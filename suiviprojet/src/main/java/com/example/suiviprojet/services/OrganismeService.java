@@ -1,6 +1,6 @@
 package com.example.suiviprojet.services;
 
-import com.example.suiviprojet.dto.OrganismeRequestDTO;
+import com.example.suiviprojet.dto.organisme.OrganismeRequestDTO;
 import com.example.suiviprojet.dto.organisme.OrganismeResponseDTO;
 import com.example.suiviprojet.entities.Organisme;
 import com.example.suiviprojet.repositories.OrganismeRepository;
