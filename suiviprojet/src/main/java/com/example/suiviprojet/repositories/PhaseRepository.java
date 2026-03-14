@@ -15,8 +15,6 @@ public interface PhaseRepository extends JpaRepository<Phase, Long> {
     List<Phase> findByProjetId(Long projetId);
     boolean existsByCodeAndProjetId(String code, Long projetId);
 
-    // Requêtes métier pour le reporting du comptable
-    // Phases terminées mais pas encore facturées
     @Query("""
         SELECT ph FROM Phase ph
         WHERE ph.etatRealisation = true
@@ -24,7 +22,6 @@ public interface PhaseRepository extends JpaRepository<Phase, Long> {
     """)
     List<Phase> findTermineesNonFacturees();
 
-    // Phases facturées mais pas encore payées
     @Query("""
         SELECT ph FROM Phase ph
         WHERE ph.etatFacturation = true
@@ -32,14 +29,12 @@ public interface PhaseRepository extends JpaRepository<Phase, Long> {
     """)
     List<Phase> findFactureesNonPayees();
 
-    // Phases entièrement payées
     @Query("""
         SELECT ph FROM Phase ph
         WHERE ph.etatPaiement = true
     """)
     List<Phase> findPayees();
 
-    // Les mêmes requêtes filtrées par période
     @Query("""
         SELECT ph FROM Phase ph
         WHERE ph.etatRealisation = true
@@ -66,7 +61,6 @@ public interface PhaseRepository extends JpaRepository<Phase, Long> {
     List<Phase> findPayeesByPeriode(@Param("dateDebut") LocalDate dateDebut,
                                     @Param("dateFin") LocalDate dateFin);
 
-    // Somme des montants des phases d'un projet (pour vérifier le plafond)
     @Query("""
         SELECT COALESCE(SUM(ph.montant), 0)
         FROM Phase ph
