@@ -15,7 +15,7 @@ public interface ProjetRepository extends JpaRepository<Projet, Long> {
     Optional<Projet> findByCode(String code);
 
     boolean existsByCode(String code);
-    List<Projet> findByNomContainingIgnoreCase(String nom);
+    List<Projet> findByNomContaining(String nom);
     List<Projet> findByOrganismeId(Long organismeId);
     List<Projet> findByChefProjetId(Long chefProjetId);
 
