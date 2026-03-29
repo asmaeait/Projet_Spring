@@ -33,6 +33,7 @@ public class Employe {
     @Column(unique = true, nullable = false)
     private String login;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
