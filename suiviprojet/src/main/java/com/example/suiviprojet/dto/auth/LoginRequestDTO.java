@@ -5,8 +5,9 @@ import lombok.Data;
 
 @Data
 public class LoginRequestDTO {
-    @NotBlank
+    @NotBlank(message = "Login obligatoire")
     private String login;
-    @NotBlank
+
+    @NotBlank(message = "Mot de passe obligatoire")
     private String password;
 }
