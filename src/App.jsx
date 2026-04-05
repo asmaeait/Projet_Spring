@@ -5,7 +5,9 @@ import NotFound from './pages/NotFound'
 import Forbidden from './pages/Forbidden'
 
 // Pages modules (vides pour l'instant)
-import Organismes from './pages/Organismes'
+import OrganismeList   from './pages/Organismes/OrganismeList'
+import OrganismeForm   from './pages/Organismes/OrganismeForm'
+import OrganismeDetail from './pages/Organismes/OrganismeDetail'
 import Employes from './pages/Employes'
 import Projets from './pages/Projets'
 import Phases from './pages/Phases'
@@ -25,7 +27,11 @@ export default function App() {
         {/* Routes avec layout */}
         <Route element={<MainLayout />}>
           <Route path="/dashboard"     element={<Dashboard />} />
-          <Route path="/organismes"    element={<Organismes />} />
+          //  routes, ordre important !
+          <Route path="/organismes"              element={<OrganismeList />} />
+          <Route path="/organismes/nouveau"      element={<OrganismeForm />} />
+          <Route path="/organismes/:id/modifier" element={<OrganismeForm />} />
+          <Route path="/organismes/:id"          element={<OrganismeDetail />} />
           <Route path="/employes"      element={<Employes />} />
           <Route path="/projets"       element={<Projets />} />
           <Route path="/phases"        element={<Phases />} />
