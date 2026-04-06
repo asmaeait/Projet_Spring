@@ -1,3 +1,10 @@
+<<<<<<< Updated upstream
+export default function Phases() {   
+  return (
+    <div>
+      <h1 className="text-2xl font-bold text-gray-900 mb-1">Phases</h1>
+      <p className="text-gray-500 text-sm">Module en cours de développement</p>
+=======
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import phaseService from '../services/phaseService'
@@ -17,10 +24,13 @@ export default function Phases() {
 
   const [form, setForm] = useState({
     code: '', libelle: '', description: '',
-    dateDebut: '', dateFin: '', pourcentage: ''
+    dateDebut: '', dateFin: '', montant: ''
   })
 
-  useEffect(() => { fetchAll() }, [projetId])
+  useEffect(() => {
+    if (!projetId) { navigate('/projets'); return }
+    fetchAll()
+  }, [projetId])
 
   const fetchAll = async () => {
     try {
@@ -40,7 +50,7 @@ export default function Phases() {
 
   const resetForm = () => setForm({
     code: '', libelle: '', description: '',
-    dateDebut: '', dateFin: '', pourcentage: ''
+    dateDebut: '', dateFin: '', montant: ''
   })
 
   const handleEdit = (phase) => {
@@ -51,7 +61,7 @@ export default function Phases() {
       description: phase.description || '',
       dateDebut:   phase.dateDebut?.substring(0, 10) || '',
       dateFin:     phase.dateFin?.substring(0, 10) || '',
-      pourcentage: phase.pourcentage || '',
+      montant:     phase.montant || '',
     })
     setShowModal(true)
   }
@@ -94,11 +104,10 @@ export default function Phases() {
 
   const handleEtat = async (phase, type) => {
     try {
-      const etatActuel = type === 'realisation'
-        ? phase.estTerminee
-        : type === 'facturation'
-        ? phase.estFacturee
-        : phase.estPayee
+      const etatActuel =
+        type === 'realisation' ? phase.etatRealisation :
+        type === 'facturation' ? phase.etatFacturation :
+        phase.etatPaiement
       const nouvelEtat = !etatActuel
 
       if (type === 'realisation')
@@ -127,7 +136,8 @@ export default function Phases() {
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div>
-          <button onClick={() => navigate('/projets')}
+          <button
+            onClick={() => navigate('/projets')}
             className="text-sm text-gray-500 hover:underline mb-1 block"
           >← Retour aux projets</button>
           <h1 className="text-2xl font-bold text-gray-900">
@@ -165,7 +175,7 @@ export default function Phases() {
                 <th className="px-4 py-3 text-left">Code</th>
                 <th className="px-4 py-3 text-left">Libellé</th>
                 <th className="px-4 py-3 text-left">Dates</th>
-                <th className="px-4 py-3 text-left">%</th>
+                <th className="px-4 py-3 text-left">Montant</th>
                 <th className="px-4 py-3 text-left">États</th>
                 <th className="px-4 py-3 text-left">Actions</th>
               </tr>
@@ -185,39 +195,49 @@ export default function Phases() {
                     <td className="px-4 py-3 text-gray-500 text-xs">
                       {phase.dateDebut?.substring(0, 10)} → {phase.dateFin?.substring(0, 10)}
                     </td>
-                    <td className="px-4 py-3 text-gray-500">{phase.pourcentage}%</td>
+                    <td className="px-4 py-3 text-gray-500">
+                      {phase.montant ? `${phase.montant} DH` : '-'}
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex flex-col gap-1">
-                        <Badge condition={phase.estTerminee} trueLabel="✓ Réalisée" falseLabel="○ En cours" />
-                        <Badge condition={phase.estFacturee} trueLabel="✓ Facturée" falseLabel="○ Non facturée" />
-                        <Badge condition={phase.estPayee}    trueLabel="✓ Payée"    falseLabel="○ Non payée" />
+                        <Badge condition={phase.etatRealisation} trueLabel="✓ Réalisée"     falseLabel="○ En cours" />
+                        <Badge condition={phase.etatFacturation} trueLabel="✓ Facturée"     falseLabel="○ Non facturée" />
+                        <Badge condition={phase.etatPaiement}    trueLabel="✓ Payée"        falseLabel="○ Non payée" />
                       </div>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex flex-col gap-1">
-                        {/* Bouton réalisation — toujours visible */}
-                        <button onClick={() => handleEtat(phase, 'realisation')}
+                        <button
+                          onClick={() => handleEtat(phase, 'realisation')}
                           className="text-xs text-purple-600 hover:underline text-left"
-                        >{phase.estTerminee ? 'Annuler réalisation' : 'Marquer réalisée'}</button>
+                        >
+                          {phase.etatRealisation ? 'Annuler réalisation' : 'Marquer réalisée'}
+                        </button>
 
-                        {/* Facturation — seulement si réalisée */}
-                        {phase.estTerminee && (
-                          <button onClick={() => handleEtat(phase, 'facturation')}
+                        {phase.etatRealisation && (
+                          <button
+                            onClick={() => handleEtat(phase, 'facturation')}
                             className="text-xs text-orange-600 hover:underline text-left"
-                          >{phase.estFacturee ? 'Annuler facturation' : 'Marquer facturée'}</button>
+                          >
+                            {phase.etatFacturation ? 'Annuler facturation' : 'Marquer facturée'}
+                          </button>
                         )}
 
-                        {/* Paiement — seulement si facturée */}
-                        {phase.estFacturee && (
-                          <button onClick={() => handleEtat(phase, 'paiement')}
+                        {phase.etatFacturation && (
+                          <button
+                            onClick={() => handleEtat(phase, 'paiement')}
                             className="text-xs text-green-600 hover:underline text-left"
-                          >{phase.estPayee ? 'Annuler paiement' : 'Marquer payée'}</button>
+                          >
+                            {phase.etatPaiement ? 'Annuler paiement' : 'Marquer payée'}
+                          </button>
                         )}
 
-                        <button onClick={() => handleEdit(phase)}
+                        <button
+                          onClick={() => handleEdit(phase)}
                           className="text-xs text-blue-600 hover:underline text-left"
                         >Modifier</button>
-                        <button onClick={() => handleDelete(phase.id)}
+                        <button
+                          onClick={() => handleDelete(phase.id)}
                           className="text-xs text-red-600 hover:underline text-left"
                         >Supprimer</button>
                       </div>
@@ -230,7 +250,7 @@ export default function Phases() {
         </div>
       )}
 
-      {/* Modal Phase */}
+      {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-lg max-h-screen overflow-y-auto">
@@ -241,54 +261,67 @@ export default function Phases() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Code *</label>
-                  <input type="text" required value={form.code}
+                  <input
+                    type="text" required value={form.code}
                     onChange={e => setForm({...form, code: e.target.value})}
                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Pourcentage *</label>
-                  <input type="number" required min="0" max="100" value={form.pourcentage}
-                    onChange={e => setForm({...form, pourcentage: e.target.value})}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Montant (DH) *</label>
+                  <input
+                    type="number" required min="0" value={form.montant}
+                    onChange={e => setForm({...form, montant: e.target.value})}
                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Libellé *</label>
-                <input type="text" required value={form.libelle}
+                <input
+                  type="text" required value={form.libelle}
                   onChange={e => setForm({...form, libelle: e.target.value})}
                   className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea rows={3} value={form.description}
+                <textarea
+                  rows={3} value={form.description}
                   onChange={e => setForm({...form, description: e.target.value})}
                   className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Date début *</label>
-                  <input type="date" required value={form.dateDebut}
+                  <input
+                    type="date" required value={form.dateDebut}
                     onChange={e => setForm({...form, dateDebut: e.target.value})}
                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Date fin *</label>
-                  <input type="date" required value={form.dateFin}
+                  <input
+                    type="date" required value={form.dateFin}
                     onChange={e => setForm({...form, dateFin: e.target.value})}
                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
+
               <div className="flex justify-end gap-3 pt-2">
-                <button type="button" onClick={() => setShowModal(false)}
+                <button
+                  type="button"
+                  onClick={() => { setShowModal(false); setEditing(null); resetForm() }}
                   className="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-50"
                 >Annuler</button>
-                <button type="submit"
+                <button
+                  type="submit"
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >{editing ? 'Modifier' : 'Créer'}</button>
               </div>
@@ -296,6 +329,7 @@ export default function Phases() {
           </div>
         </div>
       )}
+>>>>>>> Stashed changes
     </div>
   )
 }

@@ -1,3 +1,10 @@
+<<<<<<< Updated upstream
+export default function Projets() {   
+  return (
+    <div>
+      <h1 className="text-2xl font-bold text-gray-900 mb-1">Projets</h1>
+      <p className="text-gray-500 text-sm">Module en cours de développement</p>
+=======
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import projetService from '../services/projetService'
@@ -51,14 +58,14 @@ export default function Projets() {
   const handleEdit = (p) => {
     setEditing(p)
     setForm({
-      code:         p.code,
-      nom:          p.nom,
-      description:  p.description || '',
+      code:         p.code         || '',
+      nom:          p.nom          || '',
+      description:  p.description  || '',
       dateDebut:    p.dateDebut?.substring(0, 10) || '',
-      dateFin:      p.dateFin?.substring(0, 10) || '',
-      montant:      p.montant || '',
-      organismeId:  p.organisme?.id || '',
-      chefProjetId: p.chefProjet?.id || '',
+      dateFin:      p.dateFin?.substring(0, 10)   || '',
+      montant:      p.montant      || '',
+      organismeId:  p.organismeId  || '',
+      chefProjetId: p.chefProjetId || '',
     })
     setShowModal(true)
   }
@@ -95,7 +102,7 @@ export default function Projets() {
       fetchAll()
       setTimeout(() => setSuccess(null), 3000)
     } catch (err) {
-      setError('Erreur lors de la suppression')
+      setError(err.response?.data?.message || 'Erreur lors de la suppression')
     }
   }
 
@@ -110,7 +117,7 @@ export default function Projets() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Projets</h1>
-          <p className="text-gray-500 text-sm">Gestion des projets</p>
+          <p className="text-gray-500 text-sm">{projets.length} projet(s) au total</p>
         </div>
         <button
           onClick={() => { setEditing(null); resetForm(); setShowModal(true) }}
@@ -147,7 +154,7 @@ export default function Projets() {
           <p className="text-gray-500 mt-2">Chargement...</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow overflow-hidden">
+        <div className="bg-white rounded-xl shadow overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
               <tr>
@@ -172,9 +179,11 @@ export default function Projets() {
                   <tr key={p.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 font-medium text-blue-600">{p.code}</td>
                     <td className="px-4 py-3 font-medium">{p.nom}</td>
-                    <td className="px-4 py-3 text-gray-500">{p.organisme?.nom || '-'}</td>
+                    <td className="px-4 py-3 text-gray-500">{p.nomOrganisme || '-'}</td>
                     <td className="px-4 py-3 text-gray-500">
-                      {p.chefProjet ? `${p.chefProjet.nom} ${p.chefProjet.prenom}` : '-'}
+                      {p.nomChefProjet
+                        ? `${p.nomChefProjet} ${p.prenomChefProjet}`
+                        : '-'}
                     </td>
                     <td className="px-4 py-3 text-gray-500 text-xs">
                       {p.dateDebut?.substring(0, 10)} → {p.dateFin?.substring(0, 10)}
@@ -183,18 +192,18 @@ export default function Projets() {
                       {p.montant ? `${p.montant} DH` : '-'}
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap">
                         <button
                           onClick={() => navigate(`/projets/${p.id}/phases`)}
-                          className="text-green-600 hover:text-green-800 font-medium text-xs border border-green-200 px-2 py-1 rounded"
+                          className="text-green-600 hover:text-green-800 text-xs border border-green-200 px-2 py-1 rounded"
                         >Phases</button>
                         <button
                           onClick={() => handleEdit(p)}
-                          className="text-blue-600 hover:text-blue-800 font-medium text-xs"
+                          className="text-blue-600 hover:text-blue-800 text-xs"
                         >Modifier</button>
                         <button
                           onClick={() => handleDelete(p.id)}
-                          className="text-red-600 hover:text-red-800 font-medium text-xs"
+                          className="text-red-600 hover:text-red-800 text-xs"
                         >Supprimer</button>
                       </div>
                     </td>
@@ -217,14 +226,16 @@ export default function Projets() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Code *</label>
-                  <input type="text" required value={form.code}
+                  <input
+                    type="text" required value={form.code}
                     onChange={e => setForm({...form, code: e.target.value})}
                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Montant (DH)</label>
-                  <input type="number" value={form.montant}
+                  <input
+                    type="number" min="0" value={form.montant}
                     onChange={e => setForm({...form, montant: e.target.value})}
                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
@@ -233,7 +244,8 @@ export default function Projets() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
-                <input type="text" required value={form.nom}
+                <input
+                  type="text" required value={form.nom}
                   onChange={e => setForm({...form, nom: e.target.value})}
                   className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -241,7 +253,8 @@ export default function Projets() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea rows={3} value={form.description}
+                <textarea
+                  rows={3} value={form.description}
                   onChange={e => setForm({...form, description: e.target.value})}
                   className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -250,14 +263,16 @@ export default function Projets() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Date début *</label>
-                  <input type="date" required value={form.dateDebut}
+                  <input
+                    type="date" required value={form.dateDebut}
                     onChange={e => setForm({...form, dateDebut: e.target.value})}
                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Date fin *</label>
-                  <input type="date" required value={form.dateFin}
+                  <input
+                    type="date" required value={form.dateFin}
                     onChange={e => setForm({...form, dateFin: e.target.value})}
                     className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
@@ -266,7 +281,8 @@ export default function Projets() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Organisme *</label>
-                <select required value={form.organismeId}
+                <select
+                  required value={form.organismeId}
                   onChange={e => setForm({...form, organismeId: e.target.value})}
                   className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
@@ -279,22 +295,28 @@ export default function Projets() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Chef de projet *</label>
-                <select required value={form.chefProjetId}
+                <select
+                  required value={form.chefProjetId}
                   onChange={e => setForm({...form, chefProjetId: e.target.value})}
                   className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">Sélectionner un chef de projet...</option>
-                  {employes.map(e => (
-                    <option key={e.id} value={e.id}>{e.nom} {e.prenom}</option>
+                  {employes.map(emp => (
+                    <option key={emp.id} value={emp.id}>
+                      {emp.nom} {emp.prenom}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button type="button" onClick={() => setShowModal(false)}
+                <button
+                  type="button"
+                  onClick={() => { setShowModal(false); setEditing(null); resetForm() }}
                   className="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-50"
                 >Annuler</button>
-                <button type="submit"
+                <button
+                  type="submit"
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >{editing ? 'Modifier' : 'Créer'}</button>
               </div>
@@ -302,6 +324,7 @@ export default function Projets() {
           </div>
         </div>
       )}
+>>>>>>> Stashed changes
     </div>
   )
 }
