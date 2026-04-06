@@ -323,7 +323,6 @@ export default function Phases() {
           </div>
         </div>
       )}
->>>>>>> Stashed changes
     </div>
   )
 }
