@@ -1,10 +1,3 @@
-<<<<<<< Updated upstream
-export default function Projets() {   
-  return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-1">Projets</h1>
-      <p className="text-gray-500 text-sm">Module en cours de développement</p>
-=======
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import projetService from '../services/projetService'
@@ -58,14 +51,14 @@ export default function Projets() {
   const handleEdit = (p) => {
     setEditing(p)
     setForm({
-      code:         p.code         || '',
-      nom:          p.nom          || '',
-      description:  p.description  || '',
+      code:         p.code                        || '',
+      nom:          p.nom                         || '',
+      description:  p.description                 || '',
       dateDebut:    p.dateDebut?.substring(0, 10) || '',
       dateFin:      p.dateFin?.substring(0, 10)   || '',
-      montant:      p.montant      || '',
-      organismeId:  p.organismeId  || '',
-      chefProjetId: p.chefProjetId || '',
+      montant:      p.montant                     || '',
+      organismeId:  p.organismeId                 || '',
+      chefProjetId: p.chefProjetId                || '',
     })
     setShowModal(true)
   }
@@ -90,7 +83,7 @@ export default function Projets() {
       fetchAll()
       setTimeout(() => setSuccess(null), 3000)
     } catch (err) {
-      setError(err.response?.data?.message || 'Erreur lors de la sauvegarde')
+      setError(err.response?.data?.erreur || err.response?.data?.message || 'Erreur lors de la sauvegarde')
     }
   }
 
@@ -102,7 +95,7 @@ export default function Projets() {
       fetchAll()
       setTimeout(() => setSuccess(null), 3000)
     } catch (err) {
-      setError(err.response?.data?.message || 'Erreur lors de la suppression')
+      setError(err.response?.data?.erreur || err.response?.data?.message || 'Erreur lors de la suppression')
     }
   }
 
@@ -113,6 +106,7 @@ export default function Projets() {
 
   return (
     <div className="p-6">
+
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
@@ -122,7 +116,9 @@ export default function Projets() {
         <button
           onClick={() => { setEditing(null); resetForm(); setShowModal(true) }}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-        >+ Nouveau projet</button>
+        >
+          + Nouveau projet
+        </button>
       </div>
 
       {/* Recherche */}
@@ -150,7 +146,7 @@ export default function Projets() {
       {/* Tableau */}
       {loading ? (
         <div className="text-center py-10">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto" />
           <p className="text-gray-500 mt-2">Chargement...</p>
         </div>
       ) : (
@@ -179,27 +175,33 @@ export default function Projets() {
                   <tr key={p.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 font-medium text-blue-600">{p.code}</td>
                     <td className="px-4 py-3 font-medium">{p.nom}</td>
-                    <td className="px-4 py-3 text-gray-500">{p.nomOrganisme || '-'}</td>
+                    <td className="px-4 py-3 text-gray-500">{p.nomOrganisme || '—'}</td>
                     <td className="px-4 py-3 text-gray-500">
-                      {p.nomChefProjet
-                        ? `${p.nomChefProjet} ${p.prenomChefProjet}`
-                        : '-'}
+                      {p.nomChefProjet ? `${p.nomChefProjet} ${p.prenomChefProjet}` : '—'}
                     </td>
                     <td className="px-4 py-3 text-gray-500 text-xs">
                       {p.dateDebut?.substring(0, 10)} → {p.dateFin?.substring(0, 10)}
                     </td>
                     <td className="px-4 py-3 text-gray-500">
-                      {p.montant ? `${p.montant} DH` : '-'}
+                      {p.montant ? `${p.montant.toLocaleString()} DH` : '—'}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2 flex-wrap">
+                        <button
+                          onClick={() => navigate(`/projets/${p.id}/detail`)}
+                          className="text-blue-600 hover:text-blue-800 text-xs border border-blue-200 px-2 py-1 rounded"
+                        >Détail</button>
+                        <button
+                          onClick={() => navigate(`/projets/${p.id}/resume`)}
+                          className="text-purple-600 hover:text-purple-800 text-xs border border-purple-200 px-2 py-1 rounded"
+                        >Résumé</button>
                         <button
                           onClick={() => navigate(`/projets/${p.id}/phases`)}
                           className="text-green-600 hover:text-green-800 text-xs border border-green-200 px-2 py-1 rounded"
                         >Phases</button>
                         <button
                           onClick={() => handleEdit(p)}
-                          className="text-blue-600 hover:text-blue-800 text-xs"
+                          className="text-yellow-600 hover:text-yellow-800 text-xs"
                         >Modifier</button>
                         <button
                           onClick={() => handleDelete(p.id)}
@@ -223,6 +225,7 @@ export default function Projets() {
               {editing ? 'Modifier le projet' : 'Nouveau projet'}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Code *</label>
@@ -320,11 +323,12 @@ export default function Projets() {
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >{editing ? 'Modifier' : 'Créer'}</button>
               </div>
+
             </form>
           </div>
         </div>
       )}
->>>>>>> Stashed changes
+
     </div>
   )
 }
