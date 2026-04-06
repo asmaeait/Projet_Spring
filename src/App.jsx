@@ -23,6 +23,9 @@ import Documents    from './pages/Documents'
 import Factures     from './pages/Factures'
 import Reporting    from './pages/Reporting'
 
+import ProjetDetail from './pages/Projets/ProjetDetail'
+import ProjetResume from './pages/Projets/ProjetResume'
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -53,6 +56,9 @@ export default function App() {
           <Route path="/documents"               element={<Documents />} />
           <Route path="/factures"                element={<Factures />} />
           <Route path="/reporting"               element={<Reporting />} />
+
+          <Route path="/projets/:id/detail" element={<ProjetDetail />} />
+          <Route path="/projets/:id/resume" element={<ProjetResume />} /> 
         </Route>
 
         <Route path="/403" element={<Forbidden />} />
