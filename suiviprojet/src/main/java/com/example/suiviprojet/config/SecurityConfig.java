@@ -36,32 +36,8 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        // Routes publiques
-                        .requestMatchers("/api/auth/**").permitAll()
-
-                        // Swagger — autoriser complètement
-                        .requestMatchers(
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**",
-                                "/v3/api-docs",
-                                "/api-docs/**",
-                                "/webjars/**"
-                        ).permitAll()
-
-                        // Routes sécurisées par rôle
-                        .requestMatchers("/api/employes/**")
-                        .hasRole("ADMINISTRATEUR")
-                        .requestMatchers("/api/organismes/**")
-                        .hasAnyRole("SECRETAIRE", "DIRECTEUR")
-                        .requestMatchers("/api/projets/**")
-                        .hasAnyRole("SECRETAIRE", "DIRECTEUR", "CHEF_PROJET")
-                        .requestMatchers("/api/phases/**")
-                        .hasAnyRole("CHEF_PROJET", "DIRECTEUR")
-                        .requestMatchers("/api/factures/**", "/api/reporting/**")
-                        .hasRole("COMPTABLE")
-                        // Tout le reste → authentifié
-                        .anyRequest().authenticated()
+                        // ← TOUT autoriser pendant sprints 2/3/4
+                        .anyRequest().permitAll()
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter,
