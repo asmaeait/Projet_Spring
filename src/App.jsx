@@ -4,17 +4,24 @@ import Dashboard from './pages/Dashboard'
 import NotFound from './pages/NotFound'
 import Forbidden from './pages/Forbidden'
 
+// Organismes
 import OrganismeList   from './pages/Organismes/OrganismeList'
 import OrganismeForm   from './pages/Organismes/OrganismeForm'
 import OrganismeDetail from './pages/Organismes/OrganismeDetail'
-import Employes      from './pages/Employes'
-import Projets       from './pages/Projets'
-import Phases        from './pages/Phases'
-import Affectations  from './pages/Affectations'
-import Livrables     from './pages/Livrables'
-import Documents     from './pages/Documents'
-import Factures      from './pages/Factures'
-import Reporting     from './pages/Reporting'
+
+// Employés
+import EmployeList          from './pages/Employes/EmployeList'
+import EmployeDetail        from './pages/Employes/EmployeDetail'
+import EmployeDisponibilite from './pages/Employes/EmployeDisponibilite'
+
+// Autres modules
+import Projets      from './pages/Projets'
+import Phases       from './pages/Phases'
+import Affectations from './pages/Affectations'
+import Livrables    from './pages/Livrables'
+import Documents    from './pages/Documents'
+import Factures     from './pages/Factures'
+import Reporting    from './pages/Reporting'
 
 export default function App() {
   return (
@@ -28,29 +35,24 @@ export default function App() {
           {/* Organismes */}
           <Route path="/organismes"              element={<OrganismeList />} />
           <Route path="/organismes/nouveau"      element={<OrganismeForm />} />
-          <Route path="/organismes/:id/modifier" element={<OrganismeForm />} />
           <Route path="/organismes/:id"          element={<OrganismeDetail />} />
+          <Route path="/organismes/:id/modifier" element={<OrganismeForm />} />
 
           {/* Employés */}
-          <Route path="/employes" element={<Employes />} />
+          <Route path="/employes"                element={<EmployeList />} />
+          <Route path="/employes/disponibilite"  element={<EmployeDisponibilite />} />
+          <Route path="/employes/:id"            element={<EmployeDetail />} />
 
-          {/* Projets et Phases */}
-          <Route path="/projets"                    element={<Projets />} />
-          <Route path="/projets/:projetId/phases"   element={<Phases />} />
+          {/* Projets & Phases */}
+          <Route path="/projets"                 element={<Projets />} />
+          <Route path="/projets/:projetId/phases" element={<Phases />} />
 
-          {/* Menu sidebar /phases → message d'aide */}
-          <Route path="/phases" element={
-            <div className="p-6 text-gray-500">
-              Veuillez sélectionner un projet pour voir ses phases.
-            </div>
-          } />
-
-          {/* Reste */}
-          <Route path="/affectations" element={<Affectations />} />
-          <Route path="/livrables"    element={<Livrables />} />
-          <Route path="/documents"    element={<Documents />} />
-          <Route path="/factures"     element={<Factures />} />
-          <Route path="/reporting"    element={<Reporting />} />
+          {/* Autres */}
+          <Route path="/affectations"            element={<Affectations />} />
+          <Route path="/livrables"               element={<Livrables />} />
+          <Route path="/documents"               element={<Documents />} />
+          <Route path="/factures"                element={<Factures />} />
+          <Route path="/reporting"               element={<Reporting />} />
         </Route>
 
         <Route path="/403" element={<Forbidden />} />
