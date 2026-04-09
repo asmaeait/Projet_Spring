@@ -4,17 +4,15 @@ import authService from '../services/authService'
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [user, setUser]       = useState(null)
+  const [user,    setUser]    = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Au démarrage : si un token existe, charger l'utilisateur
   useEffect(() => {
-    const token = sessionStorage.getItem('token')
-    if (token) {
-      authService.me()
-        .then((res) => setUser(res.data))
-        .catch(() => sessionStorage.removeItem('token'))
-        .finally(() => setLoading(false))
+    const token     = sessionStorage.getItem('token')
+    const savedUser = sessionStorage.getItem('user')
+    if (token && savedUser) {
+      setUser(JSON.parse(savedUser))
+      setLoading(false)
     } else {
       setLoading(false)
     }
@@ -22,20 +20,31 @@ export function AuthProvider({ children }) {
 
   const login = async (credentials) => {
     const res = await authService.login(credentials)
-    const { token, ...userData } = res.data
+    const { token, login, role, nom, prenom } = res.data
+
+    // Stocker le token
     sessionStorage.setItem('token', token)
+
+    // Construire l'objet user depuis la réponse login
+    const userData = {
+      login,
+      nom,
+      prenom,
+      profilLibelle: role,  // role = profil.code = 'ADMINISTRATEUR'
+    }
+    sessionStorage.setItem('user', JSON.stringify(userData))
     setUser(userData)
     return userData
   }
 
   const logout = () => {
     sessionStorage.removeItem('token')
+    sessionStorage.removeItem('user')
     setUser(null)
     window.location.href = '/login'
   }
 
-  // Vérifier si l'utilisateur a un rôle donné
-  const hasRole = (role) => user?.profilLibelle === role
+  const hasRole = (...roles) => roles.includes(user?.profilLibelle)
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout, hasRole }}>

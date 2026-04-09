@@ -1,24 +1,33 @@
 import { NavLink } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext'
 import {
   LayoutDashboard, Building2, Users, FolderKanban,
   ListChecks, UserCheck, FileText, Files, Receipt,
   BarChart3, ChevronRight
 } from 'lucide-react'
 
-const menuItems = [
-  { label: 'Dashboard',    path: '/dashboard',    icon: LayoutDashboard },
-  { label: 'Organismes',   path: '/organismes',   icon: Building2 },
-  { label: 'Employés',     path: '/employes',     icon: Users },
-  { label: 'Projets',      path: '/projets',      icon: FolderKanban },
-  { label: 'Phases',       path: '/phases',       icon: ListChecks },
-  { label: 'Affectations', path: '/affectations', icon: UserCheck },
-  { label: 'Livrables',    path: '/livrables',    icon: FileText },
-  { label: 'Documents',    path: '/documents',    icon: Files },
-  { label: 'Factures',     path: '/factures',     icon: Receipt },
-  { label: 'Reporting',    path: '/reporting',    icon: BarChart3 },
-]
+// Menu selon le rôle
+const getMenuItems = (role) => {
+  const all = [
+    { label: 'Dashboard',    path: '/dashboard',    icon: LayoutDashboard, roles: ['ADMINISTRATEUR','SECRETAIRE','DIRECTEUR','CHEF_PROJET','COMPTABLE'] },
+    { label: 'Organismes',   path: '/organismes',   icon: Building2,       roles: ['ADMINISTRATEUR','SECRETAIRE','DIRECTEUR'] },
+    { label: 'Employés',     path: '/employes',     icon: Users,           roles: ['ADMINISTRATEUR'] },
+    { label: 'Projets',      path: '/projets',      icon: FolderKanban,    roles: ['ADMINISTRATEUR','SECRETAIRE','DIRECTEUR','CHEF_PROJET'] },
+    { label: 'Phases',       path: '/projets',      icon: ListChecks,      roles: ['CHEF_PROJET','ADMINISTRATEUR','DIRECTEUR'] },
+    { label: 'Affectations', path: '/affectations', icon: UserCheck,       roles: ['CHEF_PROJET','ADMINISTRATEUR'] },
+    { label: 'Livrables',    path: '/livrables',    icon: FileText,        roles: ['CHEF_PROJET','ADMINISTRATEUR'] },
+    { label: 'Documents',    path: '/documents',    icon: Files,           roles: ['CHEF_PROJET','ADMINISTRATEUR','DIRECTEUR'] },
+    { label: 'Factures',     path: '/factures',     icon: Receipt,         roles: ['COMPTABLE','ADMINISTRATEUR'] },
+    { label: 'Reporting',    path: '/reporting',    icon: BarChart3,       roles: ['DIRECTEUR','COMPTABLE','ADMINISTRATEUR'] },
+  ]
+  if (!role) return all
+  return all.filter(item => item.roles.includes(role))
+}
 
 export default function Sidebar() {
+  const { user } = useAuth()
+  const menuItems = getMenuItems(user?.profilLibelle)
+
   return (
     <aside className="w-64 bg-sidebar flex flex-col h-full shrink-0">
       {/* Logo */}
@@ -38,7 +47,7 @@ export default function Sidebar() {
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
         {menuItems.map(({ label, path, icon: Icon }) => (
           <NavLink
-            key={path}
+            key={label}
             to={path}
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all group
@@ -55,9 +64,11 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* Footer sidebar */}
+      {/* Footer */}
       <div className="px-4 py-4 border-t border-white/10">
-        <p className="text-white/30 text-xs text-center">v1.0.0 — Sprint 1</p>
+        <p className="text-white/30 text-xs text-center">
+          {user?.profilLibelle || 'Sprint 6'} — v1.0.0
+        </p>
       </div>
     </aside>
   )
